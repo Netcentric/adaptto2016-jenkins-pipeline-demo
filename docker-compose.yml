@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+ jenkins:
+  build:
+    context: ./jenkins
+  ports:
+    - "8080:8080"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./jenkins/JENKINS_HOME/jobs/slingshot/flow.groovy:/var/jenkins_home/jobs/slingshot/flow.groovy
+  network_mode: "bridge"
+ registry:
+  image: registry:0.9.1
+  container_name: registry
+  restart: always
+ wf-registry-proxy:
+  build: ./proxy
+  container_name: wf-registry-proxy
+  links: 
+   - registry:registry
+  ports :
+   - "443:443"
+  
